@@ -1,13 +1,15 @@
 package com.theimpossibleastronaut.humboldtjs.stl.view.htmltemplate
 {
-	import asjs.display.DisplayObject;
-	import asjs.events.ASJSEvent;
-	import asjs.net.PrefixLoader;
-	import asjs.net.URLRequest;
-	
+	import com.humboldtjs.display.DisplayObject;
+	import com.humboldtjs.events.HJSEvent;
+	import com.humboldtjs.net.PrefixLoader;
+	import com.humboldtjs.net.URLRequest;
+	import com.humboldtjs.system.Logger;
 	import com.theimpossibleastronaut.humboldtjs.stl.model.ObjectStoreProxy;
+	import com.theimpossibleastronaut.humboldtjs.stl.notes.HtmlTemplateNotes;
 	import com.theimpossibleastronaut.humboldtjs.stl.notes.ObjectStoreNotes;
 	
+	import dom.domobjects.HTMLElement;
 	import dom.eventFunction;
 	
 	import org.puremvc.as3.patterns.mediator.Mediator;
@@ -29,25 +31,24 @@ package com.theimpossibleastronaut.humboldtjs.stl.view.htmltemplate
 	 */
 	public class HtmlTemplateViewMediator extends Mediator
 	{
-		public static const NAME:String = "htmltemplateviewviewmediator";
-		
 		protected var mObjectStore:ObjectStoreProxy;
 		protected var mObjectStoreIdentifier:String;
+		protected var mDynamicMediatorObjectStore:ObjectStoreProxy;
 		
 		public function HtmlTemplateViewMediator(aName:String = "", aView:DisplayObject = null)
-		{
-			
+		{			
 			var theView:DisplayObject = aView;
 			
 			if (theView == null)
 				theView = new HtmlTemplateView();
 						
-			super(aName == null || aName == "" ? NAME : aName, theView);			
+			super(aName == null || aName == "" ? HtmlTemplateNotes.HTML_TEMPLATE_VIEW_MEDIATOR_NAME : aName, theView);			
 		}
 		
 		override public function onRegister():void
 		{
 			mObjectStore = facade.retrieveProxy(ObjectStoreNotes.HTML_TEMPLATE_OBJECT_STORE_PROXY_NAME) as ObjectStoreProxy;
+			mDynamicMediatorObjectStore = facade.retrieveProxy(ObjectStoreNotes.HTML_TEMPLATE_DYNAMIC_MEDIATORS_OBJECT_STORE_PROXY_NAME) as ObjectStoreProxy;
 		}
 		
 		/**
@@ -65,7 +66,7 @@ package com.theimpossibleastronaut.humboldtjs.stl.view.htmltemplate
 				return onLoadComplete();
 			
 			var theLoader:PrefixLoader = new PrefixLoader();
-			theLoader.addEventListener(ASJSEvent.COMPLETE, eventFunction(this, onTemplateInnerLoadComplete));
+			theLoader.addEventListener(HJSEvent.COMPLETE, eventFunction(this, onTemplateInnerLoadComplete));
 			theLoader.load(new URLRequest(aTemplatePath));
 		}
 		
@@ -73,7 +74,7 @@ package com.theimpossibleastronaut.humboldtjs.stl.view.htmltemplate
 		 * Gets called whenever the PrefixLoader has completed, we now cache the loaded contents
 		 * and call the onLoadComplete function.
 		 */
-		protected function onTemplateInnerLoadComplete(aEvent:ASJSEvent):void
+		protected function onTemplateInnerLoadComplete(aEvent:HJSEvent):void
 		{
 			var thePrefixLoader:PrefixLoader = aEvent.getCurrentTarget() as PrefixLoader;
 			mObjectStore.store(mObjectStoreIdentifier, thePrefixLoader.getContent() as String);
@@ -86,8 +87,70 @@ package com.theimpossibleastronaut.humboldtjs.stl.view.htmltemplate
 		 * Always overwrites the full innerHTML of the associated viewComponent.
 		 */		
 		protected function onLoadComplete():void
-		{
+		{			
 			(viewComponent as DisplayObject).getHtmlElement().innerHTML = mObjectStore.retrieve(mObjectStoreIdentifier) as String;
+			
+			parseViewComponentTree();
+		}
+		
+		/**
+		 * Parses the viewComponent tree and tries to resolve all tags within.
+		 * Uses stl:Template, stl:SubTemplate for templates and stl:SiteText for texts.
+		 * 
+		 * Make sure your template contains a wrapping tag defining the namespace stl.
+		 */
+		protected function parseViewComponentTree():void
+		{
+			var i:int = 0;
+			var theHtmlElement:HTMLElement;
+			
+			var theWrappingTags:Array = (viewComponent as DisplayObject).getHtmlElement().getElementsByTagName(getNamespacedTag(HtmlTemplateNotes.TEMPLATE_TAG));
+			if (theWrappingTags.length == 0)
+				Logger.error("There was no wrapping tag specified for this template (" + mObjectStoreIdentifier + "). Did you forget the wrapping " + getNamespacedTag(HtmlTemplateNotes.TEMPLATE_TAG) + " tag?");
+			
+			for (i = 0; i < theWrappingTags.length; i++)
+			{
+				theHtmlElement = theWrappingTags[i] as HTMLElement;
+				while (theHtmlElement.childNodes.length > 0)
+					theHtmlElement.parentNode.appendChild(theHtmlElement.childNodes[0]);
+			}
+			
+			for (i = theWrappingTags.length - 1; i >= 0; i--)
+			{
+				theHtmlElement = theWrappingTags[i] as HTMLElement;
+				theHtmlElement.parentNode.removeChild(theHtmlElement);
+			}
+			
+			var theTemplateTags:Array = (viewComponent as DisplayObject).getHtmlElement().getElementsByTagName(getNamespacedTag(HtmlTemplateNotes.SUBTEMPLATE_TAG));
+			for(i = theTemplateTags.length - 1; i >= 0; i--)
+			{
+				theHtmlElement = theTemplateTags[i] as HTMLElement;
+				
+				var theMediatorName:String = theHtmlElement.getAttribute("mediator").toString();
+				if (mDynamicMediatorObjectStore.contains(theMediatorName))
+				{
+					var theMediatorClass:* = mDynamicMediatorObjectStore.retrieve(theMediatorName);
+					var theMediator:Mediator = (new theMediatorClass) as Mediator;
+					facade.registerMediator(theMediator);
+					
+					var theReplacementElement:HTMLElement = (theMediator.getViewComponent() as DisplayObject).getHtmlElement();
+					theHtmlElement.parentNode.replaceChild(theReplacementElement, theHtmlElement);
+					
+					// Reset position, default is set to absolute (we dont like this :')
+					theReplacementElement.style["position"] = null;
+				}
+			}
+		}
+		
+		/**
+		 * Return a proper namespaced element for the given tag.
+		 *  
+		 * @see com.theimpossibleastronaut.humboldtjs.stl.notes.HtmlTemplateNotes
+		 * @param aTag String A template tag.
+		 */
+		protected function getNamespacedTag(aTag:String):String
+		{
+			return HtmlTemplateNotes.STL_NAMESPACE + ":" + aTag;
 		}
 	}
 }

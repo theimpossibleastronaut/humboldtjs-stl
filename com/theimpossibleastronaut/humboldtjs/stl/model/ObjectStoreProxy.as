@@ -1,6 +1,6 @@
 package com.theimpossibleastronaut.humboldtjs.stl.model
 {
-	import asjs.system.Logger;
+	import com.humboldtjs.system.Logger;
 	
 	import org.puremvc.as3.patterns.proxy.Proxy;
 	

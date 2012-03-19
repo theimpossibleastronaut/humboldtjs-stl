@@ -1,6 +1,6 @@
 package com.theimpossibleastronaut.humboldtjs.stl.view.htmltemplate
 {
-	import asjs.display.DisplayObject;
+	import com.humboldtjs.display.DisplayObject;
 	
 	import org.puremvc.as3.interfaces.INotifier;
 	
