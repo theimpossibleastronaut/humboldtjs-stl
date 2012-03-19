@@ -28,6 +28,7 @@ The library heavily depends on the PureMVC for HumboldtJS port, and as such you 
 	<arg value="myTestProject.as"/>
 </java>
 ```
+4. Look at the wiki for information on how to use the templating system, so you can decouple your view.
 
 ## Roadmap
 * A .swc version for major/minor releases.
