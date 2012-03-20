@@ -15,11 +15,6 @@ package com.theimpossibleastronaut.humboldtjs.stl.model
 	
 	public class ObjectStoreProxy extends Proxy
 	{
-		/**
-		 * Simple getter that makes accessing the named array easier.
-		 */
-		public function getStore():Array { return data as Array; }
-		
 		public function ObjectStoreProxy(aProxyName:String)
 		{
 			super(aProxyName, new Array());
@@ -41,7 +36,7 @@ package com.theimpossibleastronaut.humboldtjs.stl.model
 				return;
 			}
 			
-			getStore()[aKey] = aValue;
+			data[aKey] = aValue;
 		}
 		
 		/**
@@ -52,7 +47,7 @@ package com.theimpossibleastronaut.humboldtjs.stl.model
 		public function retrieve(aKey:String):Object
 		{
 			if (contains(aKey))
-				return getStore()[aKey];
+				return data[aKey];
 			
 			return null;
 		}
@@ -65,7 +60,7 @@ package com.theimpossibleastronaut.humboldtjs.stl.model
 		public function remove(aKey:String):void
 		{
 			if (contains(aKey))
-				delete getStore()[aKey];
+				delete data[aKey];
 		}
 		
 		/**
@@ -75,7 +70,7 @@ package com.theimpossibleastronaut.humboldtjs.stl.model
 		 */
 		public function contains(aKey:String):Boolean
 		{
-			return (getStore()[aKey] != null);
+			return (data[aKey] != null);
 		}
 	}
 }
