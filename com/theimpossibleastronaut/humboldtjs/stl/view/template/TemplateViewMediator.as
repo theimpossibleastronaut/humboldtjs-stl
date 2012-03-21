@@ -6,8 +6,8 @@ package com.theimpossibleastronaut.humboldtjs.stl.view.template
 	import com.humboldtjs.net.URLRequest;
 	import com.humboldtjs.system.Logger;
 	import com.theimpossibleastronaut.humboldtjs.stl.model.ObjectStoreProxy;
-	import com.theimpossibleastronaut.humboldtjs.stl.notes.TemplateNotes;
 	import com.theimpossibleastronaut.humboldtjs.stl.notes.ObjectStoreNotes;
+	import com.theimpossibleastronaut.humboldtjs.stl.notes.TemplateNotes;
 	
 	import dom.domobjects.HTMLElement;
 	import dom.eventFunction;
@@ -34,6 +34,7 @@ package com.theimpossibleastronaut.humboldtjs.stl.view.template
 		protected var mObjectStore:ObjectStoreProxy;
 		protected var mObjectStoreIdentifier:String;
 		protected var mDynamicMediatorObjectStore:ObjectStoreProxy;
+		protected var mActiveMediators:Array = new Array();
 		
 		public function TemplateViewMediator(aName:String = "", aView:DisplayObject = null)
 		{			
@@ -55,6 +56,14 @@ package com.theimpossibleastronaut.humboldtjs.stl.view.template
 			
 			mObjectStore = facade.retrieveProxy(ObjectStoreNotes.TEMPLATE_OBJECT_STORE_PROXY_NAME) as ObjectStoreProxy;
 			mDynamicMediatorObjectStore = facade.retrieveProxy(ObjectStoreNotes.TEMPLATE_DYNAMIC_MEDIATORS_OBJECT_STORE_PROXY_NAME) as ObjectStoreProxy;
+		}
+		
+		override public function onRemove():void
+		{
+			for (var i:int = 0; i < mActiveMediators.length; i++)
+				facade.removeMediator(mActiveMediators[i]);
+			
+			mActiveMediators = new Array();
 		}
 		
 		/**
@@ -138,6 +147,8 @@ package com.theimpossibleastronaut.humboldtjs.stl.view.template
 					var theMediatorClass:* = mDynamicMediatorObjectStore.retrieve(theMediatorName);
 					var theMediator:Mediator = (new theMediatorClass) as Mediator;
 					facade.registerMediator(theMediator);
+					
+					mActiveMediators.push(theMediator);
 					
 					var theReplacementElement:HTMLElement = (theMediator.getViewComponent() as DisplayObject).getHtmlElement();
 					theHtmlElement.parentNode.replaceChild(theReplacementElement, theHtmlElement);
