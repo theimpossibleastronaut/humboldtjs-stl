@@ -47,6 +47,12 @@ package com.theimpossibleastronaut.humboldtjs.stl.view.template
 		
 		override public function onRegister():void
 		{
+			if (!facade.hasProxy(ObjectStoreNotes.TEMPLATE_OBJECT_STORE_PROXY_NAME))
+				facade.registerProxy(new ObjectStoreProxy(ObjectStoreNotes.TEMPLATE_OBJECT_STORE_PROXY_NAME));
+
+			if (!facade.hasProxy(ObjectStoreNotes.TEMPLATE_DYNAMIC_MEDIATORS_OBJECT_STORE_PROXY_NAME))
+				facade.registerProxy(new ObjectStoreProxy(ObjectStoreNotes.TEMPLATE_DYNAMIC_MEDIATORS_OBJECT_STORE_PROXY_NAME));
+			
 			mObjectStore = facade.retrieveProxy(ObjectStoreNotes.TEMPLATE_OBJECT_STORE_PROXY_NAME) as ObjectStoreProxy;
 			mDynamicMediatorObjectStore = facade.retrieveProxy(ObjectStoreNotes.TEMPLATE_DYNAMIC_MEDIATORS_OBJECT_STORE_PROXY_NAME) as ObjectStoreProxy;
 		}
