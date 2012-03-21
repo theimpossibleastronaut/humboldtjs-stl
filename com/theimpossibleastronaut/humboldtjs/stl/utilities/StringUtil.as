@@ -36,13 +36,13 @@ package com.theimpossibleastronaut.humboldtjs.stl.utilities
 		}
 		
 		/**
-		 * Alias to StringEx.trim as provided by HumboldtJS Core Library.
+		 * Trim the left hand and the right hand side of the given string.
 		 * 
 		 * @param aString String A string with (optional) whitespace wrapped around itself. 
 		 */
 		public static function trim(aString:String):String
 		{
-			return StringEx.trim(aString);
+			return trimLeft(trimRight(aString));
 		}
 		
 		/**
