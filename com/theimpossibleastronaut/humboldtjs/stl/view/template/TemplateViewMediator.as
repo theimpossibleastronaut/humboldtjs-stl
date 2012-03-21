@@ -1,4 +1,4 @@
-package com.theimpossibleastronaut.humboldtjs.stl.view.htmltemplate
+package com.theimpossibleastronaut.humboldtjs.stl.view.template
 {
 	import com.humboldtjs.display.DisplayObject;
 	import com.humboldtjs.events.HJSEvent;
@@ -6,7 +6,7 @@ package com.theimpossibleastronaut.humboldtjs.stl.view.htmltemplate
 	import com.humboldtjs.net.URLRequest;
 	import com.humboldtjs.system.Logger;
 	import com.theimpossibleastronaut.humboldtjs.stl.model.ObjectStoreProxy;
-	import com.theimpossibleastronaut.humboldtjs.stl.notes.HtmlTemplateNotes;
+	import com.theimpossibleastronaut.humboldtjs.stl.notes.TemplateNotes;
 	import com.theimpossibleastronaut.humboldtjs.stl.notes.ObjectStoreNotes;
 	
 	import dom.domobjects.HTMLElement;
@@ -17,38 +17,38 @@ package com.theimpossibleastronaut.humboldtjs.stl.view.htmltemplate
 	/**
 	 * Base class for mediating the template loading and the template view for html based
 	 * templates. Inherit your mediator and views from this if you want to change behaviour.
-	 * If you want to show unprocessed html, just instantiate a new HtmlTemplateViewMediator
+	 * If you want to show unprocessed html, just instantiate a new TemplateViewMediator
 	 * and add it's viewcomponent to your stage.
 	 * 
 	 * This mediator uses the ObjectStoreProxy to cache the loaded template files.
-	 * We expect files in the htmlp format. You can create this file using the xmlpconverter
-	 * with the -n flag (for no processing).
+	 * We expect files in the htmlp or non processed xmlp format. You can create this file 
+	 * using the xmlpconverter with the -n flag (for no processing).
 	 * 
 	 * @example
 	 * loadTemplate("path/to/template.htmlp");
 	 * 
 	 * @see com.theimpossibleastronaut.humboldtjs.stl.model.ObjectStoreProxy
 	 */
-	public class HtmlTemplateViewMediator extends Mediator
+	public class TemplateViewMediator extends Mediator
 	{
 		protected var mObjectStore:ObjectStoreProxy;
 		protected var mObjectStoreIdentifier:String;
 		protected var mDynamicMediatorObjectStore:ObjectStoreProxy;
 		
-		public function HtmlTemplateViewMediator(aName:String = "", aView:DisplayObject = null)
+		public function TemplateViewMediator(aName:String = "", aView:DisplayObject = null)
 		{			
 			var theView:DisplayObject = aView;
 			
 			if (theView == null)
-				theView = new HtmlTemplateView();
+				theView = new TemplateView();
 						
-			super(aName == null || aName == "" ? HtmlTemplateNotes.HTML_TEMPLATE_VIEW_MEDIATOR_NAME : aName, theView);			
+			super(aName == null || aName == "" ? TemplateNotes.TEMPLATE_VIEW_MEDIATOR_NAME : aName, theView);			
 		}
 		
 		override public function onRegister():void
 		{
-			mObjectStore = facade.retrieveProxy(ObjectStoreNotes.HTML_TEMPLATE_OBJECT_STORE_PROXY_NAME) as ObjectStoreProxy;
-			mDynamicMediatorObjectStore = facade.retrieveProxy(ObjectStoreNotes.HTML_TEMPLATE_DYNAMIC_MEDIATORS_OBJECT_STORE_PROXY_NAME) as ObjectStoreProxy;
+			mObjectStore = facade.retrieveProxy(ObjectStoreNotes.TEMPLATE_OBJECT_STORE_PROXY_NAME) as ObjectStoreProxy;
+			mDynamicMediatorObjectStore = facade.retrieveProxy(ObjectStoreNotes.TEMPLATE_DYNAMIC_MEDIATORS_OBJECT_STORE_PROXY_NAME) as ObjectStoreProxy;
 		}
 		
 		/**
@@ -104,9 +104,9 @@ package com.theimpossibleastronaut.humboldtjs.stl.view.htmltemplate
 			var i:int = 0;
 			var theHtmlElement:HTMLElement;
 			
-			var theWrappingTags:Array = (viewComponent as DisplayObject).getHtmlElement().getElementsByTagName(getNamespacedTag(HtmlTemplateNotes.TEMPLATE_TAG));
+			var theWrappingTags:Array = (viewComponent as DisplayObject).getHtmlElement().getElementsByTagName(getNamespacedTag(TemplateNotes.TEMPLATE_TAG));
 			if (theWrappingTags.length == 0)
-				Logger.error("There was no wrapping tag specified for this template (" + mObjectStoreIdentifier + "). Did you forget the wrapping " + getNamespacedTag(HtmlTemplateNotes.TEMPLATE_TAG) + " tag?");
+				Logger.error("There was no wrapping tag specified for this template (" + mObjectStoreIdentifier + "). Did you forget the wrapping " + getNamespacedTag(TemplateNotes.TEMPLATE_TAG) + " tag?");
 			
 			for (i = 0; i < theWrappingTags.length; i++)
 			{
@@ -121,7 +121,7 @@ package com.theimpossibleastronaut.humboldtjs.stl.view.htmltemplate
 				theHtmlElement.parentNode.removeChild(theHtmlElement);
 			}
 			
-			var theTemplateTags:Array = (viewComponent as DisplayObject).getHtmlElement().getElementsByTagName(getNamespacedTag(HtmlTemplateNotes.SUBTEMPLATE_TAG));
+			var theTemplateTags:Array = (viewComponent as DisplayObject).getHtmlElement().getElementsByTagName(getNamespacedTag(TemplateNotes.SUBTEMPLATE_TAG));
 			for(i = theTemplateTags.length - 1; i >= 0; i--)
 			{
 				theHtmlElement = theTemplateTags[i] as HTMLElement;
@@ -145,12 +145,12 @@ package com.theimpossibleastronaut.humboldtjs.stl.view.htmltemplate
 		/**
 		 * Return a proper namespaced element for the given tag.
 		 *  
-		 * @see com.theimpossibleastronaut.humboldtjs.stl.notes.HtmlTemplateNotes
+		 * @see com.theimpossibleastronaut.humboldtjs.stl.notes.TemplateNotes
 		 * @param aTag String A template tag.
 		 */
 		protected function getNamespacedTag(aTag:String):String
 		{
-			return HtmlTemplateNotes.STL_NAMESPACE + ":" + aTag;
+			return TemplateNotes.STL_NAMESPACE + ":" + aTag;
 		}
 	}
 }
