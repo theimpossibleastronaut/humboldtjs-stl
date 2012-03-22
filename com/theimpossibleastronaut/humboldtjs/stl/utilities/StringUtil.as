@@ -1,7 +1,5 @@
 package com.theimpossibleastronaut.humboldtjs.stl.utilities
 {
-	import com.humboldtjs.system.StringEx;
-
 	/**
 	 * String utility class, performs some non standard available string operations.
 	 */
