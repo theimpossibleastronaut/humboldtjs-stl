@@ -4,6 +4,7 @@ package com.theimpossibleastronaut.humboldtjs.stl.view.template
 	import com.humboldtjs.events.HJSEvent;
 	import com.humboldtjs.net.PrefixLoader;
 	import com.humboldtjs.net.URLRequest;
+	import com.humboldtjs.system.Convert;
 	import com.humboldtjs.system.Logger;
 	import com.theimpossibleastronaut.humboldtjs.stl.model.ObjectStoreProxy;
 	import com.theimpossibleastronaut.humboldtjs.stl.notes.ObjectStoreNotes;
@@ -120,26 +121,32 @@ package com.theimpossibleastronaut.humboldtjs.stl.view.template
 			var theHtmlElement:HTMLElement;
 			
 			var theWrappingTags:Array = (viewComponent as DisplayObject).getHtmlElement().getElementsByTagName(getNamespacedTag(TemplateNotes.TEMPLATE_TAG));
+			if (theWrappingTags.length == 0) // For IE < 9
+				theWrappingTags = (viewComponent as DisplayObject).getHtmlElement().getElementsByTagName(TemplateNotes.TEMPLATE_TAG);
+			
 			if (theWrappingTags.length == 0)
 				Logger.error("There was no wrapping tag specified for this template (" + mObjectStoreIdentifier + "). Did you forget the wrapping " + getNamespacedTag(TemplateNotes.TEMPLATE_TAG) + " tag?");
 			
 			for (i = 0; i < theWrappingTags.length; i++)
 			{
-				theHtmlElement = theWrappingTags[i] as HTMLElement;
+				theHtmlElement = Convert.toUnTyped(theWrappingTags[i]);
 				while (theHtmlElement.childNodes.length > 0)
 					theHtmlElement.parentNode.appendChild(theHtmlElement.childNodes[0]);
 			}
 			
 			for (i = theWrappingTags.length - 1; i >= 0; i--)
 			{
-				theHtmlElement = theWrappingTags[i] as HTMLElement;
+				theHtmlElement = Convert.toUnTyped(theWrappingTags[i]);
 				theHtmlElement.parentNode.removeChild(theHtmlElement);
 			}
-			
+						
 			var theTemplateTags:Array = (viewComponent as DisplayObject).getHtmlElement().getElementsByTagName(getNamespacedTag(TemplateNotes.SUBTEMPLATE_TAG));
+			if (theTemplateTags.length == 0) // For IE < 9
+				theTemplateTags = (viewComponent as DisplayObject).getHtmlElement().getElementsByTagName(TemplateNotes.SUBTEMPLATE_TAG);
+			
 			for(i = theTemplateTags.length - 1; i >= 0; i--)
 			{
-				theHtmlElement = theTemplateTags[i] as HTMLElement;
+				theHtmlElement = Convert.toUnTyped(theTemplateTags[i]);
 				
 				var theMediatorName:String = theHtmlElement.getAttribute("mediator").toString();
 				if (mDynamicMediatorObjectStore.contains(theMediatorName))
@@ -154,7 +161,7 @@ package com.theimpossibleastronaut.humboldtjs.stl.view.template
 					theHtmlElement.parentNode.replaceChild(theReplacementElement, theHtmlElement);
 					
 					// Reset position, default is set to absolute (we dont like this :')
-					theReplacementElement.style["position"] = null;
+					theReplacementElement.style["position"] = "static";
 				}
 			}
 		}
