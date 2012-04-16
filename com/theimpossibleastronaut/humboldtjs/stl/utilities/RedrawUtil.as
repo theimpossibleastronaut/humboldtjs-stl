@@ -16,7 +16,7 @@ package com.theimpossibleastronaut.humboldtjs.stl.utilities
 	public class RedrawUtil
 	{
 		protected static const REPAINT_ELEMENT:String = "stlRepaintElement";
-		protected static const REPAINT_TIMEOUT:Number = 5;
+		protected static const REPAINT_TIMEOUT:Number = 0;
 		
 		/**
 		 * Simple hack to repaint the dom. If you don't specify a target then
