@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Humboldtjs-stl by sexybiggetje</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Humboldtjs-stl</h1>
+        <p>Standard Library for HumboldtJS</p>
+
+        <p class="view"><a href="https://github.com/sexybiggetje/humboldtjs-stl">View the Project on GitHub <small>sexybiggetje/humboldtjs-stl</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/sexybiggetje/humboldtjs-stl/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/sexybiggetje/humboldtjs-stl/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/sexybiggetje/humboldtjs-stl">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>HumboldtJS Standard Library</h1>
+
+<h2>The project</h2>
+
+<p>This Standard Library is a set of (mostly) decoupled classes providing standard reusable functionality for HumboldtJS. Examples include the simple caching proxy object ObjectStore and the html/xml based templating engine.</p>
+
+<h2>Dependencies</h2>
+
+<p>The library heavily depends on the PureMVC for HumboldtJS port, and as such you should also tell the humboldtjs.jar to link against the PureMVC library.</p>
+
+<h2>Setting up your HumboldtJS project</h2>
+
+<ol>
+<li>Check out the Empty project from the HumboldtJS repository (<a href="https://github.com/humboldtjs/HumboldtJSEmpty">https://github.com/humboldtjs/HumboldtJSEmpty</a>). Alternatively set a project up from scratch.</li>
+<li>Create a folder stl and check out the com folder from the STL (<a href="https://github.com/sexybiggetje/humboldtjs-stl/tree/master/com">https://github.com/sexybiggetje/humboldtjs-stl/tree/master/com</a>). Alternatively you might grab this folder from the tarball.</li>
+<li>Add the stl folder to your source lookup path, and add the include flag to your humboldtjs.jar call. (Don't forget to include the PureMVC.swc from the HumboldtJS Empty Project).</li>
+</ol><div class="highlight"><pre><span class="nt">&lt;java</span> <span class="na">jar=</span><span class="s">"bin/humboldtjs.jar"</span> <span class="na">fork=</span><span class="s">"true"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;arg</span> <span class="na">value=</span><span class="s">"-basedir"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;arg</span> <span class="na">value=</span><span class="s">"../src"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;arg</span> <span class="na">value=</span><span class="s">"-debug"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;arg</span> <span class="na">value=</span><span class="s">"-I"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;arg</span> <span class="na">value=</span><span class="s">"../stl"</span><span class="nt">/&gt;</span> <span class="c">&lt;!-- Link to the STL as source --&gt;</span>
+    <span class="nt">&lt;arg</span> <span class="na">value=</span><span class="s">"-L"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;arg</span> <span class="na">value=</span><span class="s">"../lib/HumboldtJSLibrary.swc"</span><span class="nt">/&gt;</span> <span class="c">&lt;!-- Link the HumboldtJS Core Library --&gt;</span>
+    <span class="nt">&lt;arg</span> <span class="na">value=</span><span class="s">"-L"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;arg</span> <span class="na">value=</span><span class="s">"../lib/PureMVC.swc"</span><span class="nt">/&gt;</span> <span class="c">&lt;!-- Link PureMVC for HumboldtJS --&gt;</span>
+    <span class="nt">&lt;arg</span> <span class="na">value=</span><span class="s">"-o"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;arg</span> <span class="na">value=</span><span class="s">"../bin-debug"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;arg</span> <span class="na">value=</span><span class="s">"myTestProject.as"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/java&gt;</span>
+</pre></div>
+
+<ol>
+<li>Look at the wiki for information on how to use the templating system, so you can decouple your view.</li>
+</ol><h2>Roadmap</h2>
+
+<ul>
+<li>A .swc version for major/minor releases.</li>
+<li>Example code in the wiki. For now refer to in class documentation.</li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/sexybiggetje">sexybiggetje</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
